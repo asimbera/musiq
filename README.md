@@ -41,7 +41,6 @@ Feel free to send me feedback on Telegram or file an issue. Feature requests are
 
 ### Sponsors <a name='sponsors'></a>
 
-Buy me a coffee to get your name here.
 [![Buy Me a Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/asimbera)
 
 ### Credit
