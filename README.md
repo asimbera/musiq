@@ -6,7 +6,7 @@
 - [Features](#features)
 - [Feedback](#feedback)
 - [Build Process](#build)
-- [Sponsors](#sponsors)
+- [Support](#support)
 - [Credits](#credit)
 
 ### Introduction <a name='intro'></a>
@@ -39,7 +39,7 @@ Feel free to send me feedback on Telegram or file an issue. Feature requests are
 - Run `flutter pub get` to install dependencies.
 - Run `flutter run` or click run on your favorite IDE to run the app.
 
-### Sponsors <a name='sponsors'></a>
+### Support <a name='support'></a>
 
 [![Buy Me a Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/asimbera)
 
