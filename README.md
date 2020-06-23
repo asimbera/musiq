@@ -1,13 +1,15 @@
 # Musiq
 
+[![Build Status](https://travis-ci.org/asimbera/musiq.svg?branch=master)](https://travis-ci.org/asimbera/musiq)
+
 ## Table of Contents
 
-- [Introduction](#intro)
-- [Features](#features)
-- [Feedback](#feedback)
-- [Build Process](#build)
-- [Support](#support)
-- [Credits](#credit)
+  - [Introduction <a name='intro'></a>](#introduction)
+  - [Features <a name='features'></a>](#features)
+  - [Feedback <a name='feedback'></a>](#feedback)
+  - [Build Process <a name='build'></a>](#build-process)
+  - [Support <a name='support'></a>](#support)
+  - [Credit](#credit)
 
 ### Introduction <a name='intro'></a>
 
