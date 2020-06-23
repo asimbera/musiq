@@ -1,11 +1,186 @@
+import 'package:audio_service/audio_service.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-Widget buildBackButton(BuildContext context) {
-  return IconButton(
-    icon: Icon(Icons.chevron_left),
-    onPressed: () => Navigator.of(context).pop(),
-  );
+import '../services/player.dart';
+
+class SharedDrawer extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        children: <Widget>[
+          DrawerHeader(
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
+            ),
+            child: Container(),
+          ),
+          _buildDrawerAction(
+            context: context,
+            title: 'Home',
+            icon: Icons.home,
+            target: '/',
+          ),
+          _buildDrawerAction(
+            context: context,
+            title: 'Radio',
+            icon: Icons.radio,
+            target: '/radio',
+            enabled: false,
+          ),
+          _buildDrawerAction(
+            context: context,
+            title: 'Library',
+            icon: Icons.library_music,
+            target: '/library',
+            enabled: false,
+          ),
+          Divider(),
+          _buildDrawerAction(
+            context: context,
+            title: 'Settings',
+            icon: Icons.settings_applications,
+            target: '/settings',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDrawerAction({
+    @required BuildContext context,
+    @required String title,
+    @required IconData icon,
+    @required String target,
+    bool enabled = true,
+  }) {
+    final isCurrent = ModalRoute.of(context).settings.name == target;
+    return ListTile(
+      title: Text(title),
+      leading: Icon(icon),
+      selected: isCurrent,
+      enabled: enabled,
+      onTap: () {
+        Navigator.of(context).pop();
+        if (!isCurrent) Navigator.pushNamed(context, target);
+      },
+    );
+  }
+}
+
+class BottomPlayerBar extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<PlayerStateStream>(
+      stream: PlayerControl.playerStateStream,
+      builder: (_, snapshot) {
+        final _data = snapshot?.data;
+        final _state = _data?.playbackState;
+        final _mediaItem = _data?.mediaItem;
+        final _playing = _state?.playing ?? false;
+        final _processingState =
+            _state?.processingState ?? AudioProcessingState.none;
+        final _position = _state?.position?.inMilliseconds ?? 0;
+        final _duration = _mediaItem?.duration?.inMilliseconds ?? 1;
+        print(_processingState);
+        return _processingState == AudioProcessingState.none
+            ? Container(
+                height: 0,
+                width: 0,
+              )
+            : Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  // Progress bar
+                  SizedBox(
+                    height: 2,
+                    child: LinearProgressIndicator(
+                      value: _position / _duration,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Theme.of(context).accentColor,
+                      ),
+                      backgroundColor: Colors.grey[300],
+                    ),
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      // color: Theme.of(context).backgroundColor,
+                      border: Border(
+                        bottom: BorderSide(
+                          color: Colors.black12,
+                          width: 0.5,
+                        ),
+                      ),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                    child: Row(
+                      children: <Widget>[
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: CachedNetworkImage(
+                            imageUrl: _mediaItem.artUri,
+                            height: 50,
+                            width: 50,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 15,
+                              vertical: 10,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  _mediaItem.title,
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                SizedBox(height: 2),
+                                Text(
+                                  _mediaItem.artist,
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.black45,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.skip_previous),
+                          onPressed: () => PlayerControl.skipToPrevious(),
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            _playing
+                                ? Icons.pause_circle_filled
+                                : Icons.play_circle_filled,
+                          ),
+                          onPressed: () => _playing
+                              ? PlayerControl.pause()
+                              : PlayerControl.play(),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.skip_next),
+                          onPressed: () => PlayerControl.skipToNext(),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+      },
+    );
+  }
 }
 
 Widget buildShimmerContainer({BuildContext context, Widget child}) {
@@ -25,20 +200,6 @@ Widget buildShimmerContainer({BuildContext context, Widget child}) {
               ? Colors.grey[300]
               : Colors.grey[600],
         );
-}
-
-Widget gradientMask({Widget child}) {
-  return ShaderMask(
-    shaderCallback: (bounds) => LinearGradient(
-      colors: [
-        Colors.blue,
-        Colors.deepPurple,
-      ],
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-    ).createShader(bounds),
-    child: child,
-  );
 }
 
 Widget buildListItem({
