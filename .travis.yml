@@ -1,12 +1,20 @@
+language: android
 os:
   - linux
-sudo: false
+root: false
+android:
+  components:
+    - tools
+    - android-29
+    - build-tools-29.0.3
 addons:
   apt:
-    - ubuntu-toolchain-r-test
-  packages:
-    - libstdc++6
-    - fonts-droid
+    update: true
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - libstdc++6
+
 before_script:
   - git clone https://github.com/flutter/flutter.git -b stable
   - ./flutter/bin/flutter doctor
